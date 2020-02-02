@@ -23,7 +23,7 @@ templates = Jinja2Templates(directory="templates")
 
 # Set up the model for inference
 defaults.device = torch.device("cpu")
-modelPath = Path("../data-v2/spectrograms/")
+modelPath = Path("data-v2/spectrograms/")
 learn = load_learner(modelPath)
 
 def generate_tempfile_libROSA_spectrogram(audio_file):

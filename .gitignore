@@ -9,3 +9,6 @@ tmp.pth
 
 # Ignore generated spectrograms
 *.png
+
+# Ignore compiled python artifacts
+*.pyc

@@ -1,0 +1,10 @@
+aiofiles==0.4.0
+fastai==1.0.60
+fastprogress==0.2.2
+Jinja2==2.11.1
+librosa==0.7.2
+matplotlib==3.1.2
+python-multipart==0.0.5
+starlette==0.13.1
+torch==1.4.0
+uvicorn==0.11.2

@@ -1,0 +1,11 @@
+# Ignore notebook checkpoints
+.ipynb_checkpoints
+
+# Ignore temp model files
+tmp.pth
+
+# Ignore saved models, since they are huge and can be re-computed
+*.pth
+
+# Ignore generated spectrograms
+*.png

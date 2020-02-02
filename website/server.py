@@ -5,7 +5,6 @@ from starlette.templating import Jinja2Templates
 # Libs for spectrogram generation
 import os
 import io
-import soundfile
 import librosa
 import librosa.display
 import matplotlib.pyplot
@@ -16,6 +15,7 @@ from fastai.vision import *
 # Other libs
 from pathlib import Path
 import uvicorn
+import base64
 
 # Set up the server
 app = Starlette()
@@ -52,21 +52,27 @@ def generate_tempfile_libROSA_spectrogram(audio_file):
 def predict_hot_or_cold(audio_buffer):
     with generate_tempfile_libROSA_spectrogram(audio_buffer) as tempSpectrogram:
         spectrogram = open_image(tempSpectrogram)
-        return learn.predict(spectrogram)
+        prediction = learn.predict(spectrogram)
+        tempSpectrogram.seek(0)
+        encoded_spectrogram = str(base64.b64encode(tempSpectrogram.read()))[2:-1] # remove the leading b' and trailing '
+        return prediction + (encoded_spectrogram, )
 
 @app.route("/evaluate_audio_sample", methods=["POST"])
 async def evaluate_audio_sample(request):
     formData = await request.form()
     audio_bytes = await formData["file"].read()
-    audio_file_ext = formData["file"].filename[-4:];
-    with tempfile.NamedTemporaryFile(suffix=audio_file_ext) as audio_file:
+    audio_file_ext = formData["file"].filename[-4:]
+    with tempfile.NamedTemporaryFile(suffix=audio_file_ext, delete=False) as audio_file:
         audio_file.write(audio_bytes)
-        pred_classification, pred_idx, outputs = predict_hot_or_cold(audio_file.name)
+        pred_classification, pred_idx, outputs, encodedSpectrogram = predict_hot_or_cold(audio_file.name)
+        audio_file.close()
+        os.unlink(audio_file.name)
         return templates.TemplateResponse("audio-analysis-result.html", {
             "request": request,
             "prediction": str(pred_classification),
             "probability_cold" : outputs[0].item(),
             "probability_hot" : outputs[1].item(),
+            "encoded_spectrogram" : encodedSpectrogram,
         })
 
 @app.route("/how-to")

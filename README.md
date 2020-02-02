@@ -27,11 +27,11 @@ There is a simple infrence pipeline defined in [server.py](website/server.py) un
 
 ## Running the website
 
+1. Navigate to the `website` directory
+    * This ensures all relative paths in the server script resolve correctly
 1. Install dependencies:
     * `pip3 install -r requirements.txt`
         * On certain platforms, such as Windows, torch and fastai may not install correctly. Use conda to install them in such cases.
-1. Navigate to the `website` directory
-    * This ensures all relative paths in the server script resolve correctly
 1. Start the server:
     * `python3 server.py`
 1. Navigate to the url and port printed in the terminal window

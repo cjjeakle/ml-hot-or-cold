@@ -10,7 +10,7 @@ Additionally, this project can act as a liberally licensed example of sound clas
 [Build log 1](Build-Log-1_Design.ipynb) starts with a more detailed project description.
 
 ## How to try the classifier:
-Submit an audio clip of pouring water here: http://hot-or-cold.projects.chrisjeakle.com
+Submit an audio clip of pouring water here: https://ml-hot-or-cold.azurewebsites.net/
 
 Alternatively: clone this repo, and follow the steps used in [build log 3](Build-Log-3_Testing-The-Model.ipynb) to test data of your own.
 

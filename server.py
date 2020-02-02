@@ -84,4 +84,5 @@ def how_to(request):
 def index(request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-uvicorn.run(app)
+if __name__ == "__main__":
+    uvicorn.run("server:app", host="localhost", port=8000, reload=True, log_level="info")

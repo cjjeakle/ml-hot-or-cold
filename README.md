@@ -25,7 +25,7 @@ Finally, [build log 3](Build-Log-3_Testing-The-Model.ipynb) tries out the model 
 
 There is a simple infrence pipeline defined in [server.py](server.py) under the `evaluate_audio_sample` route.
 
-## Running the website
+## Running the website locally
 
 1. Install dependencies:
     * `pip3 install -r requirements.txt`
@@ -33,6 +33,14 @@ There is a simple infrence pipeline defined in [server.py](server.py) under the 
 1. Start the server:
     * `python3 server.py`
 1. Navigate to the url and port printed in the terminal window
+
+## Hosting the website
+
+1. `apt install gunicorn`
+1. Install pip dependencies
+    * `pip3 install -r requirements.txt`
+1. `gunicorn server:app -k uvicorn.workers.UvicornWorker`
+    * See the [uvicorn deployment docs](https://www.uvicorn.org/deployment/) for all available options
 
 ## License
 ### Software License (except where otherwise noted in comments)

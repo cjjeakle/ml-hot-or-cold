@@ -34,7 +34,7 @@ There is a simple infrence pipeline defined in [server.py](website/server.py) un
     * This ensures all relative paths in the server script resolve correctly
 1. Start the server:
     * `python3 server.py`
-1. Navigate to: http://localhost:8001
+1. Navigate to the url and port printed in the terminal window
 
 ## License
 ### Software License (except where otherwise noted in comments)

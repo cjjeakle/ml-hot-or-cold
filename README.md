@@ -23,12 +23,10 @@ Take a look at the build logs to find out!
 
 Finally, [build log 3](Build-Log-3_Testing-The-Model.ipynb) tries out the model on some data the model has never seen before (not even for validation).
 
-There is a simple infrence pipeline defined in [server.py](website/server.py) under the `evaluate_audio_sample` route.
+There is a simple infrence pipeline defined in [server.py](server.py) under the `evaluate_audio_sample` route.
 
 ## Running the website
 
-1. Navigate to the `website` directory
-    * This ensures all relative paths in the server script resolve correctly
 1. Install dependencies:
     * `pip3 install -r requirements.txt`
         * On certain platforms, such as Windows, torch and fastai may not install correctly. Use conda to install them in such cases.

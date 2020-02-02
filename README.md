@@ -36,13 +36,6 @@ There is a simple infrence pipeline defined in [server.py](website/server.py) un
     * `python3 server.py`
 1. Navigate to: http://localhost:8001
 
-## Hosting the website
-
-1. Follow the steps [here](https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/) to set up nginx as a reverse proxy (to provide https support)
-    * Point the reverse proxy to a running instance of `server.py` at localhost:8001
-        * See [Running the website](#Running-the-website) to start the server
-
-
 ## License
 ### Software License (except where otherwise noted in comments)
 The MIT License (MIT)

@@ -21,7 +21,7 @@ import base64
 app = Starlette()
 templates = Jinja2Templates(directory="templates")
 
-# Set up the model for infrence
+# Set up the model for inference
 defaults.device = torch.device("cpu")
 modelPath = Path("../data-v2/spectrograms/")
 learn = load_learner(modelPath)

@@ -10,7 +10,7 @@ Additionally, this project can act as a liberally licensed example of sound clas
 [Build log 1](Build-Log-1_Design.ipynb) starts with a more detailed project description.
 
 ## How to try the classifier:
-Submit an audio clip of pouring water here: https://ml-hot-or-cold.azurewebsites.net/
+Submit an audio clip of pouring water here: ml-hot-or-cold.projects.chrisjeakle.com/
 
 Alternatively: clone this repo, and follow the steps used in [build log 3](Build-Log-3_Testing-The-Model.ipynb) to test data of your own.
 
@@ -36,13 +36,59 @@ There is a simple infrence pipeline defined in [server.py](server.py) under the 
 
 ## Hosting the website
 
-1. `apt install gunicorn`
+A guide from absolutely nothing to a working site hosted on an VM: I pulled my hair out so you don't have to!
+
+1. Provision an Ubuntu 18 LTS VM with at least 2GiB of ram
+    * I strongly suggest only setting up key based auth for SSH, and blocking port 22 once everything is set up
+1. SSH in
+1. Clone this repo
+1. Navigate to the root of this repo
+1. `apt install virtualenv screen gunicorn libsndfile1 ffmpeg nginx`
+1. `virtualenv -p /usr/bin/python3 ./venv`
+    * Do this to ensure you're using python3, and only python3
+1. `source venv/bin/activate`
+    * Enter your new python virtual env
 1. Install pip dependencies
     * `pip3 install -r requirements.txt`
-1. `gunicorn server:app -k uvicorn.workers.UvicornWorker`
-    * See the [uvicorn deployment docs](https://www.uvicorn.org/deployment/) for all available options
+        * If you hit memory errors installing torch, try [these steps](https://stackoverflow.com/a/29467260) (but allocating 2097152 of swap, e.g.: 2GiB) and set the `--no-cache-dir` flag on pip3
+1. `deactivate`
+    * Exit your virtual env
+1. Start a `screen` and run
+    1. `source venv/bin/activate`
+    1. `gunicorn3 --name ml-hot-or-cold --bind=unix:///tmp/ml-hot-or-cold.sock -w 3 -k uvicorn.workers.UvicornWorker --log-level warning server:app`
+        * See the [uvicorn deployment docs](https://www.uvicorn.org/deployment/) for all available options
+        * It appears the best practice is to set `-w` to [2 * num_cores + 1](https://docs.gunicorn.org/en/stable/design.html#how-many-workers) 
+1. Detach using `ctrl+a d`
+    * Reattach using `screen -ls` and `screen -r <screen name>`
+1. Sanity check your config using `curl --unix-socket ///tmp/ml-hot-or-cold.sock http://localhost`
+1. [Set up nginx](https://www.uvicorn.org/deployment/#running-behind-nginx)
+    * Don't forget to `sudo systemctl stop nginx` before editing `/etc/nginx/sites-available/default` and to run `sudo systemctl enable nginx` and `sudo systemctl start nginx` after
+    * I ended up using this configuration:
+        ```
+        sudo bash -c "echo '
+        server {
+            listen 80;
+            client_max_body_size 4G;
+
+            server_name ml-hot-or-cold.projects.chrisjeakle.com;
+                proxy_redirect off;
+                proxy_buffering off;
+
+            location / {
+                proxy_pass http://uvicorn;
+            }
+        }
+
+        upstream uvicorn {
+            server unix:/tmp/ml-hot-or-cold.sock;
+        }
+        ' > /etc/nginx/sites-available/default"
+        ```
+        * **Beware, this overwrites the default nginx configuration entirely!**
+1. Set up [letsencrypt certbot](https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/) (for TLS)
 
 ## License
+
 ### Software License (except where otherwise noted in comments)
 The MIT License (MIT)
 

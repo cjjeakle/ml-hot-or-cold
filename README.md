@@ -10,7 +10,7 @@ Additionally, this project can act as a liberally licensed example of sound clas
 [Build log 1](Build-Log-1_Design.ipynb) starts with a more detailed project description.
 
 ## How to try the classifier:
-Submit an audio clip of pouring water here: ml-hot-or-cold.projects.chrisjeakle.com/
+Submit an audio clip of pouring water here: https://ml-hot-or-cold.projects.chrisjeakle.com/
 
 Alternatively: clone this repo, and follow the steps used in [build log 3](Build-Log-3_Testing-The-Model.ipynb) to test data of your own.
 
@@ -86,6 +86,9 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
         ```
         * **Beware, this overwrites the default nginx configuration entirely!**
 1. Set up [letsencrypt certbot](https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/) (for TLS)
+
+## A note on the data
+The data is annotated with temperatures, but those annotations are not based on precise measurements. The 40 degree water was kept in the refrigerator before pouring, the 43 degree water was poured a couple times so I raised the annotated temperature a bit, the 7x degree water was at room temperature (the value is based on my thermostat at the time), and all temperatures >= 175 were annotated with the set temperature on my electric kettle. All temperatures are in Fahrenheit.
 
 ## License
 

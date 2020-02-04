@@ -88,7 +88,7 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
 1. Set up [letsencrypt certbot](https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/) (for TLS)
 
 ## A note on the data
-The data is annotated with temperatures, but those annotations are not based on precise measurements. The 40 degree water was kept in the refrigerator before pouring, the 43 degree water was poured a couple times so I raised the annotated temperature a bit, the 7x degree water was at room temperature (the value is based on my thermostat at the time), and all temperatures >= 175 were annotated with the set temperature on my electric kettle. All temperatures are in Fahrenheit.
+The data is annotated with temperatures, but those annotations are not based on precise measurements. The 40 degree water was kept in the refrigerator before pouring, the 4x degree water was poured a couple times so I raised the annotated temperature a bit, the 7x degree water was at room temperature (the value is based on my thermostat at the time), and all temperatures >= 175 were annotated with the set temperature on my electric kettle. All temperatures are in Fahrenheit.
 
 ## License
 

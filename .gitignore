@@ -12,3 +12,7 @@ tmp.pth
 
 # Ignore compiled python artifacts
 *.pyc
+
+# Ignore dotfiles
+.*
+!.gitignore

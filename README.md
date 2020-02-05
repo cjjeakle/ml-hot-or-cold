@@ -55,7 +55,7 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
     * Exit your virtual env
 1. Start a `screen` and run
     1. `source venv/bin/activate`
-    1. `gunicorn3 --name ml-hot-or-cold --bind=unix:///tmp/ml-hot-or-cold.sock -w 3 -k uvicorn.workers.UvicornWorker --log-level warning server:app`
+    1. `gunicorn --name ml-hot-or-cold --bind=unix:///tmp/ml-hot-or-cold.sock -w 3 -k uvicorn.workers.UvicornWorker --log-level warning server:app`
         * See the [uvicorn deployment docs](https://www.uvicorn.org/deployment/) for all available options
         * It appears the best practice is to set `-w` to [2 * num_cores + 1](https://docs.gunicorn.org/en/stable/design.html#how-many-workers) 
 1. Detach using `ctrl+a d`

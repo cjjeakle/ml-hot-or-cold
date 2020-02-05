@@ -73,6 +73,7 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
             server_name ml-hot-or-cold.projects.chrisjeakle.com;
                 proxy_redirect off;
                 proxy_buffering off;
+                proxy_force_ranges on;
 
             location / {
                 proxy_pass http://uvicorn;

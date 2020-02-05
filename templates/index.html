@@ -25,26 +25,68 @@
       </div>
     </div>
     <br>
-    <div class="row center-text">
+    <div class="row" style="text-align: center;">
       <div class="col-lg-6 offset-lg-3">
         <form action="/evaluate_audio_sample" method="post" enctype="multipart/form-data">
-          <p>Choose an audio file of water pouring:</p>
-          <input type="file" name="file" accept="audio/*">
-          <input type="submit" value="Test chosen file">
+          <h4>Upload an audio file of water pouring:</h4>
+          <div class="row">
+            <div class="col">
+              <p><input type="file" name="file" accept="audio/*"></p>
+            </div>
+            <div class="col">
+              <p><input type="submit" value="Analyze chosen file"></p>
+            </div>
+          </div>
         </form>
       </div>
     </div>
-    <div class="row center-text">
+    <div class="row" style="text-align: center;">
+      <div class="col">
+        OR
+      </div>
+    </div>
+    <div class="row" style="text-align: center;">
+      <div class="col">
+        <h4>Choose an example below:</h4>
+        <div class="row">
+          <div class="col-lg-6">
+            <p><a href="/evaluate_example?file=cold-sample-40f.m4a">Test this example of cold water (40℉)</a></p>
+            <audio controls preload="none">
+              <source src="/static/example-audio/cold-sample-40f.m4a" type="audio/mp4" />
+              <p>Couldn't load audio preview.</p>
+            </audio>
+            <p><a href="/evaluate_example?file=cold-sample-73f.m4a">Test this example of cold water (73℉)</a></p>
+            <audio controls preload="none">
+              <source src="/static/example-audio/cold-sample-73f.m4a" type="audio/mp4" />
+              <p>Couldn't load audio preview.</p>
+            </audio>
+          </div>
+          <div class="col-lg-6">
+            <p><a href="/evaluate_example?file=hot-sample-175f.m4a">Test this example of hot water (175℉)</a></p>
+            <audio controls preload="none">
+              <source src="/static/example-audio/hot-sample-175f.m4a" type="audio/mp4" />
+              <p>Couldn't load audio preview.</p>
+            </audio>
+            <p><a href="/evaluate_example?file=hot-sample-212f.m4a">Test this example of hot water (212℉)</a></p>
+            <audio controls preload="none">
+              <source src="/static/example-audio/hot-sample-212f.m4a" type="audio/mp4" />
+              <p>Couldn't load audio preview.</p>
+            </audio>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-lg-6 offset-lg-3">
         <hr />
         <div class="row">
-          <div class="col-lg-5">
+          <div class="col-5">
             Created by: <a href="https://www.chrisjeakle.com">Chris Jeakle</a>
           </div>
-          <div class="col-lg-2">
+          <div class="col-2">
             |
           </div>
-          <div class="col-lg-5">
+          <div class="col-5">
             <a href="https://github.com/cjjeakle/ml-hot-or-cold">View project source</a>
           </div>
         </div>

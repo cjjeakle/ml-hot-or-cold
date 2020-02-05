@@ -1,6 +1,8 @@
 # Web server libs
 from starlette.applications import Starlette
+from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
+from starlette.staticfiles import StaticFiles
 
 # Libs for spectrogram generation
 import os
@@ -20,6 +22,9 @@ import base64
 # Set up the server
 app = Starlette()
 templates = Jinja2Templates(directory="templates")
+
+# Provide access to static assets
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Set up the model for inference
 defaults.device = torch.device("cpu")
@@ -49,13 +54,19 @@ def generate_tempfile_libROSA_spectrogram(audio_file):
 
     return outputFile
 
-def predict_hot_or_cold(audio_buffer):
-    with generate_tempfile_libROSA_spectrogram(audio_buffer) as tempSpectrogram:
+def predict_hot_or_cold(audio_file, request):
+    with generate_tempfile_libROSA_spectrogram(audio_file) as tempSpectrogram:
         spectrogram = open_image(tempSpectrogram)
-        prediction = learn.predict(spectrogram)
+        pred_classification, pred_idx, outputs = learn.predict(spectrogram)
         tempSpectrogram.seek(0)
         encoded_spectrogram = str(base64.b64encode(tempSpectrogram.read()))[2:-1] # remove the leading b' and trailing '
-        return prediction + (encoded_spectrogram, )
+        return templates.TemplateResponse("audio-analysis-result.html", {
+            "request": request,
+            "prediction": str(pred_classification),
+            "probability_cold" : outputs[0].item(),
+            "probability_hot" : outputs[1].item(),
+            "encoded_spectrogram" : encoded_spectrogram,
+        })
 
 @app.route("/evaluate_audio_sample", methods=["POST"])
 async def evaluate_audio_sample(request):
@@ -64,16 +75,19 @@ async def evaluate_audio_sample(request):
     audio_file_ext = formData["file"].filename[-4:]
     with tempfile.NamedTemporaryFile(suffix=audio_file_ext, delete=False) as audio_file:
         audio_file.write(audio_bytes)
-        pred_classification, pred_idx, outputs, encodedSpectrogram = predict_hot_or_cold(audio_file.name)
+        response_page = predict_hot_or_cold(audio_file.name, request)
         audio_file.close()
         os.unlink(audio_file.name)
-        return templates.TemplateResponse("audio-analysis-result.html", {
-            "request": request,
-            "prediction": str(pred_classification),
-            "probability_cold" : outputs[0].item(),
-            "probability_hot" : outputs[1].item(),
-            "encoded_spectrogram" : encodedSpectrogram,
-        })
+        return response_page
+
+@app.route("/evaluate_example", methods=["GET"])
+async def evaluate_example(request):
+    example_name = request.query_params['file']
+    examples_path = Path("static/example-audio")
+    audio_file = (examples_path/example_name).resolve()
+    if audio_file.parent != examples_path.resolve():
+        return HTMLResponse("Nice try, " + example_name + " is not permitted.")
+    return predict_hot_or_cold(audio_file, request)
 
 @app.route("/how-to")
 def how_to(request):

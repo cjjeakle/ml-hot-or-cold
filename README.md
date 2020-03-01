@@ -25,6 +25,8 @@ Finally, [build log 3](Build-Log-3_Testing-The-Model.ipynb) tries out the model 
 
 There is a simple infrence pipeline defined in [server.py](server.py) under the `evaluate_audio_sample` route.
 
+I've started an [addendum](Addendum.md) with notes and correction I've learned as I work further in the fast.ai course.
+
 ## Running the website locally
 
 1. Install dependencies:

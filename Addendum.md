@@ -18,7 +18,7 @@ In [part 1, lesson 6](https://github.com/hiromis/notes/blob/master/Lesson6.md#ca
 
 This project's first build log used the `FloatList` configuration (because the data annotations were scalar, rather than categorical enums), but I pieced together my image regression pipeline using function documentation I didn't fully understand. Because my attempt at image regression failed, I suggest looking at Fast AI lesson 6's rich, working example of regression on tabular data (a somewhat different problem domain, but hopefully similar enough to be useful).
 
-*Helpful suggestion:*
+*Helpful suggestions:*
 
 Consider setting [`log=true`](https://github.com/hiromis/notes/blob/master/Lesson6.md#reminder-about-doc-2509) when setting up `FloatList` labels (e.g.: `.label_from_df(cols=dep_var, label_cls=FloatList, log=True)`). This ensures the classifier won't be too thrown-off by long-tail examples, since performance will be measured in a way that accounts for orders of magnitude (e.g.: off by $5 on $1,000,000 is negligible, while off by $5 on $2 is huge). This is useful when predicting population, sales numbers, prices, or anything with a wide (unbounded, even) distribution of values.
 

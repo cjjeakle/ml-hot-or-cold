@@ -73,16 +73,16 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
             client_max_body_size 4G;
 
             server_name ml-hot-or-cold.projects.chrisjeakle.com;
-                proxy_redirect off;
-                proxy_buffering off;
-                proxy_force_ranges on;
+            proxy_redirect off;
+            proxy_buffering off;
+            proxy_force_ranges on;
 
             location / {
-                proxy_pass http://uvicorn;
+                proxy_pass http://ml_hot_or_cold_upstream;
             }
         }
 
-        upstream uvicorn {
+        upstream ml_hot_or_cold_upstream {
             server unix:/tmp/ml-hot-or-cold.sock;
         }
         ' > /etc/nginx/sites-available/default"

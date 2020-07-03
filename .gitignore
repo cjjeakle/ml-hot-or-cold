@@ -16,3 +16,6 @@ tmp.pth
 # Ignore dotfiles
 .*
 !.gitignore
+
+# Ignore virtual env stuff
+/venv

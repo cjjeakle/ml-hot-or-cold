@@ -34,7 +34,7 @@ learn = load_learner(modelPath)
 
 # Note: librosa.load sometimes throws when audioread/ffdec.py calls self.proc.kill().
 #       It'd be a lot to figure out why, so just retry if that happens.
-@retry(stop_max_attempt_number=3)
+@retry(stop_max_attempt_number=5)
 def generate_tempfile_libROSA_spectrogram(audio_file):
     min_frequency = 256
     max_frequency = 16384

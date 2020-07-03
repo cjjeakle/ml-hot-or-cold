@@ -16,6 +16,7 @@ from fastai.vision import *
 
 # Other libs
 from pathlib import Path
+from retrying import retry
 import uvicorn
 import base64
 
@@ -31,6 +32,9 @@ defaults.device = torch.device("cpu")
 modelPath = Path("data-v2/spectrograms/")
 learn = load_learner(modelPath)
 
+# Note: librosa.load sometimes throws when audioread/ffdec.py calls self.proc.kill().
+#       It'd be a lot to figure out why, so just retry if that happens.
+@retry(stop_max_attempt_number=3)
 def generate_tempfile_libROSA_spectrogram(audio_file):
     min_frequency = 256
     max_frequency = 16384

@@ -71,7 +71,7 @@ torch==1.5.1
 torchvision==0.6.1
 tqdm==4.46.1
 urllib3==1.25.8
-uvicorn==0.11.2
+uvicorn==0.11.7
 uvloop==0.14.0
 wasabi==0.7.0
 webencodings==0.5.1

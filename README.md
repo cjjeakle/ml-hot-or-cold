@@ -64,7 +64,7 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
 
         [Service]
         Type=forking
-        ExecStart=/bin/bash -c '/bin/screen -dmS ml-hot-or-cold bash -c "cd /srv/ml-hot-or-cold && source venv/bin/activate && gunicorn --name ml-hot-or-cold --bind=unix:///tmp/ml-hot-or-cold.sock -w 3 -k uvicorn.workers.UvicornWorker --log-level warning server:app"'
+        ExecStart=/bin/bash -c '/bin/screen -dmS ml-hot-or-cold bash -c "cd /srv/ml-hot-or-cold && source venv/bin/activate && gunicorn --name ml-hot-or-cold --bind=unix:///tmp/ml-hot-or-cold.sock -w 3 -k uvicorn.workers.UvicornWorker --preload --timeout=120 --log-level warning server:app"'
 
         [Install]
         WantedBy=multi-user.target

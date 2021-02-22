@@ -75,7 +75,7 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
         User=ml-hot-or-cold
         Group=ml-hot-or-cold
         WorkingDirectory=/home/ml-hot-or-cold/server/
-        ExecStart=/bin/bash -c 'cd /home/ml-hot-or-cold/server/ && source venv/bin/activate && gunicorn --name ml-hot-or-cold --bind=unix:///tmp/ml-hot-or-cold.sock -w 3 -k uvicorn.workers.UvicornWorker --log-level warning server:app'
+        ExecStart=/bin/bash -c 'cd /home/ml-hot-or-cold/server/ && source venv/bin/activate && gunicorn --name ml-hot-or-cold --bind=unix:///tmp/ml-hot-or-cold.sock -w 3 -k uvicorn.workers.UvicornWorker --preload --timeout=120 --log-level warning server:app'
 
         [Install]
         WantedBy=multi-user.target

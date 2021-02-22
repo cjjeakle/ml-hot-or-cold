@@ -43,17 +43,24 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
 1. Provision an Ubuntu 18 LTS VM with at least 2GiB of ram
     * I strongly suggest only setting up key based auth for SSH, and blocking port 22 once everything is set up
 1. SSH in
-1. Clone this repo
-    * If hosting: it is a good idea to clone this repo under `/srv`, since this will run as a web service
+1. `sudo apt install virtualenv libsndfile1 ffmpeg nginx python3-dev`
+1. Create a new non-root user to run the web service
+    1.  `sudo useradd --create-home ml-hot-or-cold`
+1. Become that non-root user
+    * e.g.: `sudo su ml-hot-or-cold`
+1. Clone this repo into the service user's home directory
+    * e.g.: `git clone https://github.com/cjjeakle/ml-hot-or-cold.git ~/server/`
 1. Navigate to the root of this repo
-1. `apt install virtualenv screen libsndfile1 ffmpeg nginx python3-dev`
+    * e.g.: `cd ~/server/`
 1. `virtualenv -p /usr/bin/python3 ./venv`
     * Do this to ensure you're using python3, and only python3
-1. `source venv/bin/activate`
-    * Enter your new python virtual env
+1. Enter your new python virtual env
+    * `source venv/bin/activate`
+        * You may have to enter a `bash` session to run this command if your shell defaults to `sh`
 1. Install pip dependencies
     * `pip3 install -r requirements.txt`
-        * If you hit memory errors installing torch, try [these steps](https://stackoverflow.com/a/29467260) (but allocating 2097152 of swap, e.g.: 2GiB) and set the `--no-cache-dir` flag on pip3
+        * If you hit memory errors installing torch, temporarily exit the venv and try [these steps](https://stackoverflow.com/a/29467260)
+            * Note: allocate 2097152 of swap, e.g.: 2GiB
 1. `deactivate`
     * Exit your virtual env
 1. Configure the webserver using systemd
@@ -63,8 +70,12 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
         Description=ml-hot-or-cold application server
 
         [Service]
-        Type=forking
-        ExecStart=/bin/bash -c '/bin/screen -dmS ml-hot-or-cold bash -c "cd /srv/ml-hot-or-cold && source venv/bin/activate && gunicorn --name ml-hot-or-cold --bind=unix:///tmp/ml-hot-or-cold.sock -w 3 -k uvicorn.workers.UvicornWorker --log-level warning server:app"'
+        Type=simple
+        Restart=always
+        User=ml-hot-or-cold
+        Group=ml-hot-or-cold
+        WorkingDirectory=/home/ml-hot-or-cold/server/
+        ExecStart=/bin/bash -c 'cd /home/ml-hot-or-cold/server/ && source venv/bin/activate && gunicorn --name ml-hot-or-cold --bind=unix:///tmp/ml-hot-or-cold.sock -w 3 -k uvicorn.workers.UvicornWorker --log-level warning server:app'
 
         [Install]
         WantedBy=multi-user.target
@@ -76,19 +87,18 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
         sudo systemctl enable ml-hot-or-cold &&
         sudo systemctl start ml-hot-or-cold
         ```
-    * The service will be running under a screen named "ml-hot-or-cold"
-        * See all running screens using `screen -ls` (you need to run with `sudo` to see screens from other users)
-        * Reattach using `screen -r <screen name>`
-        * Detach using `ctrl+a d`
-1. Sanity check your config using `curl --unix-socket ///tmp/ml-hot-or-cold.sock http://localhost`
+    * You can see high-level service logs using:
+        * `journalctl -u ml-hot-or-cold`
+1. Verify your config using `curl --unix-socket ///tmp/ml-hot-or-cold.sock http://localhost`
 1. [Set up nginx](https://www.uvicorn.org/deployment/#running-behind-nginx)
     * I ended up using this configuration in `/etc/nginx/conf.d/ml-hot-or-cold.conf`:
         ```
         server {
             listen 80;
-            client_max_body_size 4G;
+            client_max_body_size 10m;
 
             server_name ml-hot-or-cold.projects.chrisjeakle.com;
+
             proxy_redirect off;
             proxy_buffering off;
             proxy_force_ranges on;
@@ -103,6 +113,8 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
         }
         ```
         * Run `sudo systemctl enable nginx` and `sudo systemctl start nginx`
+    * You can see nginx logs under `/var/log/nginx/`
+        * You can `grep -v "ml-hot-or-cold" access.log | less +G` to see all accesses to the site, for example
 1. Set up [letsencrypt certbot](https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/) (for TLS)
 
 ## A note on the data

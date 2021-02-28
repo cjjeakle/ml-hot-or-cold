@@ -27,14 +27,32 @@ There is a simple infrence pipeline defined in [server.py](server.py) under the 
 
 I've started an [addendum](Addendum.md) with notes and corrections I've learned as I work further in the fast.ai course.
 
-## Running the website locally
+## Running the notebooks and website locally
 
 1. Install dependencies:
-    * `pip3 install -r requirements.txt`
-        * On certain platforms, such as Windows, torch and fastai may not install correctly. Use conda to install them in such cases.
+    1. Install miniconda:
+        ```
+        cd ~
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+        bash Miniconda3-latest-Linux-x86_64.sh
+        # Proceed through the install process
+        source ~/.bashrc
+        rm Miniconda3-latest-Linux-x86_64.sh
+        ```
+        * Add a `conda deactivate` to your `~/.bashrc` to start your shell sessions outside conda
+    1. `conda create -n ml-hot-or-cold python=3.8`
+    1. `conda activate ml-hot-or-cold`
+    1. Install the Jupyter Notebook server
+        * `conda install jupyter notebook`
+    1. `pip3 install -r requirements.txt`
+        * On certain platforms (such as WSL) torch and fastai may not install correctly. Use conda to install them in such cases. 
+            * e.g.: `conda install -c pytorch -c fastai fastai`
+1. Start the notebooks using:
+    1. `conda activate ml-hot-or-cold && jupyter notebook`
+    1. Navigate to the url and port printed in the terminal window
 1. Start the server:
-    * `python3 server.py`
-1. Navigate to the url and port printed in the terminal window
+    1. `conda activate ml-hot-or-cold && python3 server.py`
+    1. Navigate to the url and port printed in the terminal window
 
 ## Hosting the website
 

@@ -66,50 +66,54 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
 1. Create a new non-root user to run the web service
     1.  `sudo useradd --system ml-hot-or-cold`
         * Create a `system` user, we have no need for interactive shell sessions or a home dir
-1. Become that non-root user
-    * e.g.: `sudo su ml-hot-or-cold`
-1. Clone this repo into the service user's home directory
-    * e.g.: `git clone https://github.com/cjjeakle/ml-hot-or-cold.git ~/server/`
-1. Navigate to the root of this repo
-    * e.g.: `cd ~/server/`
-1. `virtualenv -p /usr/bin/python3 ./venv`
-    * Do this to ensure you're using python3, and only python3
-1. Enter your new python virtual env
-    * `source venv/bin/activate`
-        * You may have to enter a `bash` session to run this command if your shell defaults to `sh`
-1. Install pip dependencies
-    * `pip3 install -r requirements.txt`
-        * If you hit memory errors installing torch, temporarily exit the venv and try [these steps](https://stackoverflow.com/a/29467260)
-            * Note: allocate 2097152 of swap, e.g.: 2GiB
-1. `deactivate`
-    * Exit your virtual env
-1. Configure the webserver using systemd
+1. Set up the server files
+    * Note: many of the following steps use `sudo`
+        * This is necessary because `/srv/` is owned by the root user
+        * This is good -- we want the web server files to be user readable, but root owned
+            * Why: the server is exposed to the internet and should have [the fewest possible permissions](https://en.wikipedia.org/wiki/Principle_of_least_privilege), it has no need to be able to modify its own code
+    1. Clone this repo into the [`/srv/` directory](https://tldp.org/LDP/Linux-Filesystem-Hierarchy/html/srv.html)
+        * e.g.: `sudo git clone https://github.com/cjjeakle/ml-hot-or-cold.git /srv/ml-hot-or-cold/`
+    1. Navigate to the root of this repo
+        * e.g.: `cd /srv/ml-hot-or-cold/`
+    1. `mkdir ./venv && sudo chown ml-hot-or-cold ./venv`
+        * Unfortunately, because venv doesn't work well with sudo, we will need the service user to own the virtualenv we create
+    1. `sudo -u ml-hot-or-cold virtualenv -p /usr/bin/python3 ./venv`
+        * This ensures the server is run using `python3`
+    1. Install pip dependencies
+        * `sudo -u ml-hot-or-cold /bin/bash -c "source venv/bin/activate && pip3 install -r requirements.txt"`
+            * If you hit memory errors installing torch, try [these steps](https://stackoverflow.com/a/29467260)
+                * Note: allocate 2097152 of swap, e.g.: 2GiB
+    1. Test that you can start the server as the service user
+        1. `sudo -u ml-hot-or-cold /bin/bash -c 'cd /srv/ml-hot-or-cold/ && source venv/bin/activate && gunicorn --name ml-hot-or-cold --bind=unix:///tmp/ml-hot-or-cold.sock -w 3 -k uvicorn.workers.UvicornWorker --preload --timeout=120 --log-level warning server:app' # Become the service user and start the server`
+        1. Test connectivity in another terminal session (or by running the command above in a `screen` and detaching to run the following)
+            * `curl --unix-socket ///tmp/ml-hot-or-cold.sock http://localhost`
+1. Configure the web server using systemd
     1. Create a service: `/etc/systemd/system/ml-hot-or-cold.service`
         ```
         [Unit]
-        Description=ml-hot-or-cold application server
+        Description=ml-hot-or-cold web server
 
         [Service]
         Type=simple
         Restart=always
         User=ml-hot-or-cold
         Group=ml-hot-or-cold
-        WorkingDirectory=/home/ml-hot-or-cold/server/
-        ExecStart=/bin/bash -c 'cd /home/ml-hot-or-cold/server/ && source venv/bin/activate && gunicorn --name ml-hot-or-cold --bind=unix:///tmp/ml-hot-or-cold.sock -w 3 -k uvicorn.workers.UvicornWorker --preload --timeout=120 --log-level warning server:app'
+        WorkingDirectory=/srv/ml-hot-or-cold/
+        ExecStart=/bin/bash -c 'cd /srv/ml-hot-or-cold/ && source venv/bin/activate && gunicorn --name ml-hot-or-cold --bind=unix:///tmp/ml-hot-or-cold.sock -w 3 -k uvicorn.workers.UvicornWorker --preload --timeout=120 --log-level warning server:app'
 
         [Install]
         WantedBy=multi-user.target
         ```
         * See the [uvicorn deployment docs](https://www.uvicorn.org/deployment/) for all available options
         * It appears the best practice is to set `-w` to [2 * num_cores + 1](https://docs.gunicorn.org/en/stable/design.html#how-many-workers) 
-    1. Start the service:
+    1. Configure the service to start with the system, and manually start it up immediately:
         ```
-        sudo systemctl enable ml-hot-or-cold &&
-        sudo systemctl start ml-hot-or-cold
+        sudo systemctl enable ml-hot-or-cold && sudo systemctl start ml-hot-or-cold
         ```
     * You can see high-level service logs using:
+        * `systemctl status ml-hot-or-cold`
         * `journalctl -u ml-hot-or-cold`
-1. Verify your config using `curl --unix-socket ///tmp/ml-hot-or-cold.sock http://localhost`
+1. Verify your systemd config using `curl --unix-socket ///tmp/ml-hot-or-cold.sock http://localhost`
 1. [Set up nginx](https://www.uvicorn.org/deployment/#running-behind-nginx)
     * I ended up using this configuration in `/etc/nginx/conf.d/ml-hot-or-cold.conf`:
         ```
@@ -132,9 +136,9 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
             server unix:/tmp/ml-hot-or-cold.sock;
         }
         ```
-        * Run `sudo systemctl enable nginx` and `sudo systemctl start nginx`
+        * Run `sudo systemctl enable nginx && sudo systemctl start nginx`
     * You can see nginx logs under `/var/log/nginx/`
-        * You can `grep -v "ml-hot-or-cold" access.log | less +G` to see all accesses to the site, for example
+        * You can `grep -v "ml-hot-or-cold" /var/log/nginx/access.log | less +G` to see all accesses to the site, for example
 1. Set up [letsencrypt certbot](https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/) (for TLS)
 
 ## A note on the data

@@ -41,7 +41,7 @@ I've started an [addendum](Addendum.md) with notes and corrections I've learned 
 A guide from absolutely nothing to a working site hosted on an VM: I pulled my hair out so you don't have to!
 
 1. Provision an Ubuntu 18 LTS VM with at least 2GiB of ram
-    * I strongly suggest only setting up key based auth for SSH, and blocking port 22 once everything is set up
+    * Note: for some improved security, be sure to [harden your ssh setup](https://askubuntu.com/a/2279)
 1. SSH in
 1. `sudo apt install virtualenv libsndfile1 ffmpeg nginx python3-dev`
 1. Create a new non-root user to run the web service

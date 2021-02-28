@@ -43,9 +43,11 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
 1. Provision an Ubuntu 18 LTS VM with at least 2GiB of ram
     * Note: for some improved security, be sure to [harden your ssh setup](https://askubuntu.com/a/2279)
 1. SSH in
-1. `sudo apt install virtualenv libsndfile1 ffmpeg nginx python3-dev`
+1. Install pre-requisite software
+    * `sudo apt install git virtualenv libsndfile1 ffmpeg nginx python3-dev`
 1. Create a new non-root user to run the web service
-    1.  `sudo useradd --create-home ml-hot-or-cold`
+    1.  `sudo useradd --system ml-hot-or-cold`
+        * Create a `system` user, we have no need for interactive shell sessions or a home dir
 1. Become that non-root user
     * e.g.: `sudo su ml-hot-or-cold`
 1. Clone this repo into the service user's home directory

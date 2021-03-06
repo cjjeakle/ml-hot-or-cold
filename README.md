@@ -39,13 +39,14 @@ I've started an [addendum](Addendum.md) with notes and corrections I've learned 
         source ~/.bashrc
         rm Miniconda3-latest-Linux-x86_64.sh
         ```
-        * Add a `conda deactivate` to your `~/.bashrc` to start your shell sessions outside conda
+        * Run `conda config --set auto_activate_base false` to start your shell sessions outside conda
     1. `conda create -n ml-hot-or-cold python=3.8`
     1. `conda activate ml-hot-or-cold`
     1. Install the Jupyter Notebook server
         * `conda install jupyter notebook`
-    1. `pip3 install -r requirements.txt`
-        * On certain platforms (such as WSL) torch and fastai may not install correctly. Use conda to install them in such cases. 
+    1. Install project dependencies
+        * `pip3 install -r requirements.txt`
+        * On certain platforms (such as an Anaconda prompt on Windows) torch and fastai may not install correctly through pip. Use conda to install them in such cases.
             * e.g.: `conda install -c pytorch -c fastai fastai`
 1. Start the notebooks using:
     1. `conda activate ml-hot-or-cold && jupyter notebook`
@@ -53,6 +54,7 @@ I've started an [addendum](Addendum.md) with notes and corrections I've learned 
 1. Start the server:
     1. `conda activate ml-hot-or-cold && python3 server.py`
     1. Navigate to the url and port printed in the terminal window
+1. When done, exit conda via `conda deactivate`
 
 ## Hosting the website
 

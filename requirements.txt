@@ -26,7 +26,7 @@ html5lib==1.0.1
 httptools==0.1.1
 idna==2.8
 ipaddr==2.2.0
-Jinja2==2.11.1
+Jinja2==2.11.3
 joblib==0.15.1
 kiwisolver==1.2.0
 librosa==0.7.2

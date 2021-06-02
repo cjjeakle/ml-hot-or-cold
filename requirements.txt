@@ -70,7 +70,7 @@ threadpoolctl==2.1.0
 torch==1.5.1
 torchvision==0.6.1
 tqdm==4.46.1
-urllib3==1.25.8
+urllib3==1.26.5
 uvicorn==0.13.4
 uvloop==0.14.0
 wasabi==0.7.0

@@ -27,7 +27,7 @@ httptools==0.1.1
 idna==2.8
 ipaddr==2.2.0
 Jinja2==2.11.3
-joblib==0.15.1
+joblib==1.2.0
 kiwisolver==1.2.0
 librosa==0.7.2
 llvmlite==0.31.0

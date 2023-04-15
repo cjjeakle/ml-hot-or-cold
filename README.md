@@ -137,13 +137,13 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
 
                 proxy_pass http://ml_hot_or_cold_upstream;
 
-                # Add security headers, allows script-src (JS) and style-src (CSS) from cdnjs
+                # Add security headers, allows script-src (CSS) from stackpath.bootstrapcdn.com
                 add_header X-Content-Type-Options nosniff;
                 add_header X-Frame-Options SAMEORIGIN;
                 add_header X-XSS-Protection "1; mode=block";
                 add_header Referrer-Policy "strict-origin-when-cross-origin";
                 add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
-                add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self'; connect-src 'self'; object-src 'none'; frame-ancestors 'none';";
+                add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://stackpath.bootstrapcdn.com; font-src 'self'; connect-src 'self'; object-src 'none'; frame-ancestors 'none';";
 
                 # Enable clickjacking protection for modern browsers
                 add_header X-Content-Security-Policy "frame-ancestors 'self'";

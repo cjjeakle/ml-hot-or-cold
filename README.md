@@ -137,7 +137,7 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
 
                 proxy_pass http://ml_hot_or_cold_upstream;
 
-                # Add security headers, allows script-src (CSS) from stackpath.bootstrapcdn.com
+                # Add security headers, allows style-src (CSS) from stackpath.bootstrapcdn.com
                 add_header X-Content-Type-Options nosniff;
                 add_header X-Frame-Options SAMEORIGIN;
                 add_header X-XSS-Protection "1; mode=block";

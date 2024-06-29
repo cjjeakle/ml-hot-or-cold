@@ -121,6 +121,7 @@ A guide from absolutely nothing to a working site hosted on an VM: I pulled my h
         ```
         server {
             listen 80;
+            listen [::]:80;
             client_max_body_size 10m;
 
             server_name ml-hot-or-cold.projects.chrisjeakle.com;
